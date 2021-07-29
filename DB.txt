@@ -1,0 +1,183 @@
+/* == CREATING TABLES =================================================================================================================================================================================== */
+
+DROP TABLE IF EXISTS dpttbl;
+
+CREATE TABLE dpttbl (
+	DNumber 		CHAR(5) 	NOT NULL,
+	DName			VARCHAR(100) 	NOT NULL,
+	Telephone		CHAR(10) 	NOT NULL,
+	OLocation		VARCHAR(100) 	NOT NULL,
+	PRIMARY KEY 		(DNumber));
+
+/* ====================================================================================================================================================================================================== */
+ 
+DROP TABLE IF EXISTS proftbl;
+
+CREATE TABLE proftbl (
+	SSNumber		CHAR(9) 	NOT NULL,
+	DNumber			CHAR(5) 	NOT NULL REFERENCES dpttbl(DNumber),
+	PName			VARCHAR(100) 	NOT NULL,
+	SEX			VARCHAR(6) 	NOT NULL,
+	Salary			DECIMAL(8,2) 	NOT NULL,
+	Title			VARCHAR(100) 	NOT NULL,
+	Area			CHAR(3) 	NOT NULL,
+	Number			CHAR(7) 	NOT NULL,
+	Street			VARCHAR(100) 	NOT NULL,
+	City			VARCHAR(25) 	NOT NULL,
+	State			VARCHAR(25) 	NOT NULL,
+	Zip			CHAR(5) 	NOT NULL,
+	CollegeDegree		VARCHAR(100) 	NOT NULL,
+	PRIMARY KEY		(SSNumber));
+
+/* ====================================================================================================================================================================================================== */
+
+DROP TABLE IF EXISTS pastGegreetbl;
+
+CREATE TABLE pastDegreetbl (
+	SSNumber		INT 		NOT NULL REFERENCES proftbl(SSNumber),
+	CollegeDegree		VARCHAR(50) 	NOT NULL,
+	PRIMARY KEY		(CollegeDegree, SSNumber));
+
+/* ====================================================================================================================================================================================================== */
+
+DROP TABLE IF EXISTS coursetbl;
+
+CREATE TABLE coursetbl (
+	CNumber		CHAR(10) 	NOT NULL,
+	DNumber		CHAR(5) 	NOT NULL REFERENCES dpttbl(DNumber),
+	Title		VARCHAR(50) 	NOT NULL,
+	Units		CHAR(1) 	NOT NULL,
+	Textbook	VARCHAR(50) 	NOT NULL,
+	Prerequisite	VARCHAR(50) 	NOT NULL,
+	PRIMARY KEY	(CNumber));
+
+/* ====================================================================================================================================================================================================== */
+
+DROP TABLE IF EXISTS prerequisitetbl;
+
+CREATE TABLE prerequisitetbl (
+	CNumber		INT 		NOT NULL REFERENCES coursetbl(CNumber),
+	Prerequisite	VARCHAR(50) 	NOT NULL,
+	PRIMARY KEY	(Prerequisite, CNumber));
+
+/* ====================================================================================================================================================================================================== */
+
+DROP TABLE IF EXISTS sectiontbl;
+
+CREATE TABLE sectiontbl (
+	SNumber			CHAR(4) 	NOT NULL,
+	SSNumber		CHAR(10) 	NOT NULL REFERENCES coursetbl(CNumber),
+	Classroom		VARCHAR(15) 	NOT NULL,
+	MeetDays		VARCHAR(7) 	NOT NULL,
+	NoSits			CHAR(3) 	NOT NULL,
+	BTime			VARCHAR(7) 	NOT NULL,
+	ETime			VARCHAR(7) 	NOT NULL,
+	PRIMARY KEY		(SNumber));
+
+/* ====================================================================================================================================================================================================== */
+
+DROP TABLE IF EXISTS studenttbl;
+
+CREATE TABLE studenttbl (
+	IDNumber		CHAR(9) 	NOT NULL,
+	DNumber			CHAR(5) 	NOT NULL REFERENCES dpttbl(DNumber),
+	FName			VARCHAR(50) 	NOT NULL,
+	LName			VARCHAR(50) 	NOT NULL,
+	Telephone		CHAR(10) 	NOT NULL,
+	Address			VARCHAR(100) 	NOT NULL,
+	PRIMARY KEY		(IDNumber));
+
+/* ====================================================================================================================================================================================================== */
+
+DROP TABLE IF EXISTS minortbl;
+
+CREATE TABLE minortbl (
+	IDNumber		CHAR(9) 	NOT NULL REFERENCES studenttbl(IDNumber),
+	DNumber			CHAR(5) 	NOT NULL REFERENCES dpttbl(DNumber),
+	PRIMARY KEY		(IDNumber, DNumber));
+
+/* ====================================================================================================================================================================================================== */
+
+DROP TABLE IF EXISTS enrolltbl;
+
+CREATE TABLE enrolltbl (
+	SNumber			CHAR(4) 	NOT NULL REFERENCES sectiontbl(SNumber),
+	CNumber			CHAR(10) 	NOT NULL REFERENCES coursetbl(CNumber),
+	IDNumber		CHAR(9) 	NOT NULL REFERENCES studenttbl(IDNumber),
+	Grade			VARCHAR(2) 	NOT NULL,
+	PRIMARY KEY		(SNumber, CNumber, IDNumber));
+
+/* ====================================================================================================================================================================================================== */
+
+
+
+
+/* == INSERT RECORDS ==================================================================================================================================================================================== */
+
+/* == DPT TABLE ========================================================================================================================================================================================= */
+
+INSERT INTO dpttbl (DNumber, DName, Telephone, OLocation) VALUES
+	('12469'	, 'Mathematics'		, '6572783459'	, 'MH-152'),
+	('12598'	, 'Computer Science'	, '6572787332'	, 'CS-512');
+
+/* == Student Table ===================================================================================================================================================================================== */
+
+INSERT INTO studenttbl (IDNumber, DNumber, FName, LName, Telephone, Address) VALUES
+	('887734576'	, '12469'  , 'Roger'	 , 'Lincoln'	, '5621342312'	, '67 Cherry Hill Ave. Vallejo, CA 94591’.        ),
+	('887732124'	, '12469'  , 'Ashley'    , 'Myers'	, '2135672334'	, '373 Pacific Rd. Salinas, CA 93906'		  ),
+	('890781349'	, '12469'  , 'Sam'	 , 'Kim'	, '7142189754'	, '9 West Ojio Drive Corona, CA 92882'		  ),
+	('888021342'	, '12598'  , 'Moses'	 , 'Rojas'	, '5102256156'	, '86 Nut Swamp Cirlce Tulare, CA 93274'	  ),
+	('888823412'	, '12598'  , 'Amy'	 , 'Gareth'	, '6267656377'	, '7428 Del Monte St. Cupertino, CA 95014'	  ),
+	('891923756'	, '12469'  , 'Jose'	 , 'Martinez'	, '8585678380'	, '769 W. Magnolia St. Cupertino, CA 95014'	  ),
+	('890416523'	, '12598'  , 'Rose'	 , 'Gimenez'	, '5623214783'	, '7697 Marlborough Street Wilmington, CA 90744'  ),
+	('891254091'	, '12598'  , 'Jim'	 , 'Park'	, '7143476823'	, '7727 Thatcher St. San Jose, CA 95123'	  ),
+	('877712345'	, '12469'  , 'Andrew'    , 'Smith'	, '5626788901'	, '44 East Campfire Ave. San Francisco, CA 94110' ),
+	('897734342'	, '12598'  , 'Jane'	 , 'Rogers'	, '5629078945'	, '49 Myrtle Lane Victorville, CA 92392' 	  ),
+	('899934121'    , '12469'  , 'Jamie'	 , 'Ramski'	, '7142342314'  , '8044 Gregory St. Santa Ana, CA 92701'	  );
+   	
+/* == Course Table ====================================================================================================================================================================================== */
+
+INSERT INTO coursetbl (CNumber, DNumber, Title, Units, Textbook, Prerequisite) VALUES
+	('CS240'  , '12598'  , 'Assembly Language'	, '3' , 'Assembly Language by Irvine'			, 'CS123' ),
+	('CS333'  , '12598'  , 'Data Structure'		, '4' , 'Data Structure and Algorithm by Goldwasser'	, 'CS123' ),
+	('MH150'  , '12469'  , 'Calculus I'		, '4' , 'Calculus by Steward'				, 'MH141' ),
+	('MH151'  , '12469'  , 'Calculus II'		, '4' , 'Calculus by Steward'				, 'MH150' );
+
+/* == Professor Table =================================================================================================================================================================================== */
+
+INSERT INTO proftbl (SSNumber, DNumber, PName, Sex, Salary, Title, Area, Number, Street, City, State, Zip, CollegeDegree) VALUES
+	('428597359'  , '12469'  , 'Max Mill'	     , 'Male'   , 95234.52 , 'Chairperson' , '714'  , '3600458' , '121 Hillcrest Ave.'    , 'Irvine'        , 'CA' , '92604' , 'Ph.D. University of California Los Angeles'),
+	('123456784'  , '12469'  , 'John Smith'	     , 'Male'   , 88432.69 , 'Professor'   , '714'  , '1236767' , '34 Prairie Rd.'        , 'Anaheim'       , 'CA' , '92805' , 'Ph.D. University of California Berkeley'),
+	('681017643'  , '12598'  , 'Sandra Lopez'    , 'Female' , 90321.34 , 'Chairperson' , '562'  , '4567234' , '154 Garden St.'        , 'Placentia'     , 'CA' , '92870' , 'Ph.D. University of Southern California California'),
+	('897650123'  , '12598'  , 'Jona Alhm'       , 'Female' , 87456.23 , 'Professor'   , '562'  , '1002345' , '305 Leeton Ridge Ave.' , 'Laguna Niguel' , 'CA' , '92677' , 'Ph.D., State University of New York at Binghamton'), 	
+	('453412350'  , '12598'  , 'Alex Ramth'	     , 'Male'   , 89567.67 , 'Professor'   , '562'  , '5668891' , '9034 Birch Hill Rd.'   , 'San Jose'      , 'CA' , '95123' , 'Ph.D., University of Alabama'),
+	('345567781'  , '12469'  , 'Elizabeth Ramos' , 'Female' , 89123.43 , 'Professor'   , '714'  , '7655341' , '222 Gregory St.'       , 'Santa Ana'     , 'CA' , '92701' , 'Ph.D. University of Nebraska-Lincoln');
+
+/* == Section Table ===================================================================================================================================================================================== */
+
+INSERT INTO sectiontbl (SSNumber, SNumber, CNumber, Classroom, MeetDays, NoSits, BTime, ETime) VALUES
+	('897650123'   , '2517'   , 'CS240'  , 'CS-104'   , 'MW'   , '35'   , '10:00am'   , '11:15am'   ),   
+	('897650123'   , '2867'   , 'CS240'  , 'CS-101'   , 'TTh'  , '35'   , '9:30am'    , '10:45am'   ),
+	('453412350'   , '2697'   , 'CS333'  , 'CS-100'   , 'F'    , '40'   , '1:00pm'    , '3:45pm'    ),
+	('453412350'   , '2615'   , 'CS333'  , 'CS-110'   , 'MW'   , '35'   , '11:30am'   , '12:45pm'   ),
+	('345567781'   , '2534'   , 'MH150'  , 'MH-152'   , 'TTh'  , '35'   , '2:00pm'    , '3:15pm'    ),
+	('123456784'   , '2560'   , 'MH151'  , 'MH-156'   , 'S'    , '40'   , '5:00pm'    , '8:45pm'    );
+
+/* == Enrollment Table ================================================================================================================================================================================== */
+
+INSERT INTO enrolltbl (SNumber, CNumber, IDNumber, Grade) VALUES
+	('2560'   , 'MH151'   , '887734576'   , 'A-'   )  , ('2560'   , 'MH151'   , '888021342'   , 'A-'   ),
+	('2517'   , 'CS240'   , '887732124'   , 'B'    )  , ('2517'   , 'CS240'   , '887734576'   , 'C+'   ),
+	('2560'   , 'MH151'   , '890416523'   , 'C+'   )  , ('2517'   , 'CS240'   , '888021342'   , 'B-'   ),
+	('2697'   , 'CS333'   , '890416523'   , 'B+'   )  , ('2615'   , 'CS333'   , '890781349'   , 'B+'   ),
+	('2867'   , 'CS240'   , '891254091'   , 'A+'   )  , ('2560'   , 'MH151'   , '890781349'   , 'C-'   ),
+	('2534'   , 'MH150'   , '887732124'   , 'C-'   )  , ('2517'   , 'CS240'   , '888823412'   , 'B+'   ),
+	('2560'   , 'MH151'   , '891254091'   , 'B'    )  , ('2615'   , 'CS333'   , '891254091'   , 'A-'   ),
+	('2697'   , 'CS333'   , '887734576'   , 'A'    )  , ('2534'   , 'MH150'   , '888823412'   , 'B-'   ),
+	('2615'   , 'CS333'   , '891923756'   , 'B-'   )  , ('2867'   , 'CS240'   , '891923756'   , 'C-'   ),
+	('2517'   , 'CS240'   , '890781349'   , 'C+'   )  , ('2697'   , 'CS333'   , '887732124'   , 'A+'   ),
+	('2517'   , 'CS240'   , '877712345'   , 'A'    )  , ('2697'   , 'CS333'   , '877712345'   , 'A+'   ),
+	('2534'   , 'MH150'   , '877712345'   , 'B+'   )  , ('2560'   , 'MH151'   , '897734342'   , 'B-'   ),
+	('2615'   , 'CS333'   , '897734342'   , 'C+'   )  , ('2560'   , 'MH151'   , '899934121'   , 'B'    ),
+	('2517'   , 'CS240'   , '899934121'   , 'B+'   )  , ('2697'   , 'CS333'   , '899934121'   , 'A-'   ),
+	('2867'   , 'CS240'   , '897734342'   , 'A+'   );

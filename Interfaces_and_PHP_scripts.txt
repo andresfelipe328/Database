@@ -1,0 +1,336 @@
+// ===============================================================================================================================
+// Professor Interface
+// ===============================================================================================================================
+
+<!DOCTYPE html>
+<html>
+        <head>
+            <title> Content </title>
+            <link rel = "stylesheet" type = "text/css" href = "styleInterface.css">
+            <link href = "https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel = "stylesheet">
+        </head>
+        <body style = "background-color: #25383C">
+            <div class = "container">
+                <div class = "box">
+                     <div class = "icon"><i class="fa fa-user" aria-hidden="true"></i></div>
+                         <div class = "content">
+                                  <h3 style = "text-align: center"> Professor Info </h3>
+                                  <form action = "profSearch_1.php" method = "post">
+                                      <input type = "text" name = "SSN" autocomplete = "off" placeholder = "SSN">
+                                      <button>
+                                          <i class="fa fa-search" aria-hidden="true"></i>
+                                      </button>
+                                  </form>
+                         </div>
+                     </div>
+                 <div class = "box">
+                     <div class = "icon"><i class="fa fa-user" aria-hidden="true"></i></div>
+                         <div class = "content">
+                                  <h3 style = "text-align: center"> Class Info </h3>
+                                  <form action = "profSearch_2.php" method = "post">
+                                      <input type = "text" name = "CNum" autocomplete = "off" placeholder = "CourseNum">
+                                      <input type = "text" name = "SNum" autocomplete = "off" placeholder = "SectionNum">
+                                      <button>
+                                          <i class="fa fa-search" aria-hidden="true"></i>
+                                      </button>
+                                  </form>
+                         </div>
+                     </div>
+                </div>
+            </div>
+        </body>
+</html>
+
+// ===============================================================================================================================
+// Student Interface
+// ===============================================================================================================================
+
+<!DOCTYPE html>
+<html>
+        <head>
+            <title> Content </title>
+            <link rel = "stylesheet" type = "text/css" href = "styleInterface.css">
+            <link href = "https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel = "stylesheet">
+        </head>
+        <body style = "background-color: #25383C">
+            <div class = "container">
+                <div class = "box">
+                     <div class = "icon"><i class="fa fa-user" aria-hidden="true"></i></div>
+                         <div class = "content">
+                                  <h3 style = "text-align: center"> Course Info </h3>
+                                  <form action = "stdSearch_1.php" method = "post">
+                                      <input type = "text" name = "CNum" autocomplete = "off" placeholder = "CourseNum">
+                                      <button>
+                                          <i class="fa fa-search" aria-hidden="true"></i>
+                                      </button>
+                                  </form>
+                         </div>
+                     </div>
+                 <div class = "box">
+                     <div class = "icon"><i class="fa fa-user" aria-hidden="true"></i></div>
+                         <div class = "content">
+                                  <h3 style = "text-align: center"> Student Info </h3>
+                                  <form action = "stdSearch_2.php" method = "post">
+                                      <input type = "text" name = "ID" autocomplete = "off" placeholder = "StudentID">
+                                      <button>
+                                          <i class="fa fa-search" aria-hidden="true"></i>
+                                      </button>
+                                  </form>
+                         </div>
+                     </div>
+                </div>
+            </div>
+        </body>
+</html>
+
+// ===============================================================================================================================
+// Professor Search 1 - Given a SSN, show list of titles, classrooms, meeting days, and times of his/her classes:
+// ===============================================================================================================================
+
+<!DOCTYPE htlm>
+<html>
+	<head>
+	    <link rel = "stylesheet" type = "text/css" href = "styleSearches.css">	    
+	</head>
+<body style = "background-color: #25383C"> 
+<table class = "content-table">
+	<h2> Professor's Info <h2>
+	<thead>
+	<tr>
+	    <th> Title </th>
+	    <th> Classroom </th>
+	    <th> MeetDays </th>
+	    <th> BTime </th>
+	    <th> ETime </th>
+	</tr>
+	</thead>
+</body>
+<?php
+    	$host = "mariadb";
+        $user = "cs332f33";
+        $pass = "aGh3ieZi";
+	$db = "cs332f33";
+
+        $conn = mysqli_connect($host, $user, $pass, $db) OR die("Could not Connect " . mysqli_connect_error());
+	$val1 = $_POST['SSN'];
+
+       	if ($val1)
+        {
+            $show = "SELECT a.Title, b.Classroom, b.MeetDays, b.BTime, b.ETime FROM proftbl a, sectiontbl b 
+		WHERE a.SSNumber = '$val1' AND a.SSNumber = b.SSNumber";
+	    $result = mysqli_query($conn, $show);
+            while ($rows = mysqli_fetch_array($result))
+            {
+		echo "<tbody>";
+		echo "<tr>";
+		echo "<td>";
+		echo $rows['Title'];
+		echo "</td>";
+		echo "<td>";
+                echo $rows['Classroom'];
+		echo "</td>";
+		echo "<td>";
+		echo $rows['MeetDays'];
+		echo "</td>";
+		echo "<td>";
+		echo $rows['BTime'];
+		echo "</td>";
+		echo "<td>";
+		echo $rows['ETime'];
+		echo "</td>";
+                echo "</tr>";
+		echo "</tbody>";
+                echo "<br/>";
+            }
+	}
+	else
+	{
+            echo "Record not received";
+        }
+?>
+</table>
+</html>
+
+// ===============================================================================================================================
+// Professor Search 2 - Given a course number and section number, show how many students get each distinct grade:
+// ===============================================================================================================================
+
+<!DOCTYPE htlm>
+<html>
+      	<head>
+		<link rel = "stylesheet" type = "text/css" href = "styleSearches.css">            
+        </head>
+<body style = "background-color: #25383C">
+<table class = "content-table">
+        <h2> Class's Info <h2>
+        <tr>
+	    <thead>
+                <th> Grade </th>
+	        <th> TotalofStudents </td>	
+            </thead>
+	</tr>
+<?php
+     	$host = "mariadb";
+        $user = "cs332f33";
+        $pass = "aGh3ieZi";
+        $db = "cs332f33";
+
+        $conn = mysqli_connect($host, $user, $pass, $db) OR die("Could not Connect " . myqli_connect_error());
+        $val1 = $_POST['CNum'];
+	$val2 = $_POST['SNum'];	
+	
+
+        if ($val1 && $val2)
+        {
+	    $show = "SELECT Grade, COUNT(*) AS TotalofStudents FROM enrolltbl WHERE CNumber = '$val1' 
+		AND SNumber = '$val2' GROUP BY Grade";
+            $result = mysqli_query($conn, $show);
+	    while ($rows = mysqli_fetch_array($result))
+            {
+		echo "<tbody>";
+		echo "<tr>";
+		echo "<td>";
+                echo $rows['Grade'];
+		echo "<td/>";
+		echo $rows['TotalofStudents'];
+                echo "</tbody>";
+		echo "<br/>";
+            }
+	}
+	else
+	{
+            echo "Record not received";
+        }
+?>
+</table>
+</html>
+
+// ===============================================================================================================================
+// Student Search 1 - Given a course number, show classrooms, meeting days, times, and total number of students enrolled in each 
+// section:
+// ===============================================================================================================================
+
+<!DOCTYPE htlm>
+<html>
+	<head>
+	    <link rel = "stylesheet" type = "text/css" href = "styleSearches.css">	    
+	</head>
+<body style = "background-color: #25383C"> 
+<table class = "content-table">
+	<h2> Class's Info <h2>
+	<thead>
+	<tr>
+	    <th> SNumber </th>
+	    <th> Classroom </th>
+	    <th> MeetDays </th>
+	    <th> BTime </th>
+	    <th> ETime </th>
+	    <th> TotalStudents </th>
+	</tr>
+	</thead>
+</body>
+<?php
+    	$host = "mariadb";
+        $user = "cs332f33";
+        $pass = "aGh3ieZi";
+	$db = "cs332f33";
+
+        $conn = mysqli_connect($host, $user, $pass, $db) OR die("Could not Connect " . mysqli_connect_error());
+	$val1 = $_POST['CNum'];
+
+       	if ($val1)
+        {
+            $show = "SELECT a.SNumber, a.Classroom, a.MeetDays, a.BTime, a.ETime, COALESCE(b.TotalStudents, 0) 
+		AS TotalStudents FROM sectiontbl a LEFT JOIN (SELECT SNumber, COUNT(*) AS TotalStudents 
+		FROM enrolltbl WHERE CNumber = '$val1' GROUP BY SNumber) b 
+		ON b.SNumber = a.SNumber WHERE a.CNumber = '$val1'";
+	    $result = mysqli_query($conn, $show);
+            while ($rows = mysqli_fetch_array($result))
+            {
+		echo "<tbody>";
+		echo "<tr>";
+		echo "<td>";
+		echo $rows['SNumber'];
+		echo "</td>";
+		echo "<td>";
+                echo $rows['Classroom'];
+		echo "</td>";
+		echo "<td>";
+		echo $rows['MeetDays'];
+		echo "</td>";
+		echo "<td>";
+		echo $rows['BTime'];
+		echo "</td>";
+		echo "<td>";
+		echo $rows['ETime'];
+		echo "</td>";
+		echo "<td>";
+		echo $rows['TotalStudents'];
+		echo "</td>";
+                echo "</tr>";
+		echo "</tbody>";
+                echo "<br/>";
+            }
+	}
+	else
+	{
+            echo "Record not received";
+        }
+?>
+</table>
+</html>
+
+// ===============================================================================================================================
+// Student Search 2 - Given a ID number, show all courses and grades:
+// ===============================================================================================================================
+
+<!DOCTYPE htlm>
+<html>
+	<head>
+	    <link rel = "stylesheet" type = "text/css" href = "styleSearches.css">	    
+	</head>
+<body style = "background-color: #25383C"> 
+<table class = "content-table">
+	<h2> Student's Info <h2>
+	<thead>
+	<tr>
+	    <th style = "text-align: center"> CNumber </th>
+	    <th style = "text-align: center"> Grade </th>
+	</tr>
+	</thead>
+</body>
+<?php
+    	$host = "mariadb";
+        $user = "cs332f33";
+        $pass = "aGh3ieZi";
+	$db = "cs332f33";
+
+        $conn = mysqli_connect($host, $user, $pass, $db) OR die("Could not Connect " . mysqli_connect_error());
+	$val1 = $_POST['ID'];
+
+       	if ($val1)
+        {
+            $show = "SELECT a.CNumber, a.Grade FROM enrolltbl a WHERE a.IDNumber = '$val1'";
+	    $result = mysqli_query($conn, $show);
+            while ($rows = mysqli_fetch_array($result))
+            {
+		echo "<tbody>";
+		echo "<tr>";
+		echo "<td>";
+		echo $rows['CNumber'];
+		echo "</td>";
+		echo "<td>";
+                echo $rows['Grade'];
+		echo "</td>";
+                echo "</tr>";
+		echo "</tbody>";
+                echo "<br/>";
+            }
+	}
+	else
+	{
+            echo "Record not received";
+        }
+?>
+</table>
+</html>
